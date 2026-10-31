@@ -38,10 +38,10 @@ export const HistoryPage = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      <div class="panel">
-        <div class="panel-header">
+      <div className="panel">
+        <div className="panel-header">
           <h2>Workout History Log</h2>
-          <span class="badge badge-blue">Telemetry Log</span>
+          <span className="badge badge-blue">Telemetry Log</span>
         </div>
 
         {loading ? (
@@ -53,7 +53,7 @@ export const HistoryPage = () => {
             No sessions recorded yet — start a workout to see your stats here!
           </p>
         ) : (
-          <table class="admin-table">
+          <table className="admin-table">
             <thead>
               <tr>
                 <th>Date</th>
@@ -90,7 +90,7 @@ export const HistoryPage = () => {
                     </td>
                     <td>
                       <button
-                        class="btn btn-secondary btn-sm"
+                        className="btn btn-secondary btn-sm"
                         onClick={() => handleViewDetail(sess.session_id)}
                       >
                         <Eye size={14} /> View Details
@@ -106,27 +106,27 @@ export const HistoryPage = () => {
 
       {/* Session Details Modal */}
       {showDetailModal && selectedSession && (
-        <div class="modal-overlay active">
-          <div class="modal" style={{ maxWidth: '640px' }}>
-            <div class="modal-header">
+        <div className="modal-overlay active">
+          <div className="modal" style={{ maxWidth: '640px' }}>
+            <div className="modal-header">
               <h2>Session Details #{selectedSession.session_id}</h2>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', marginBottom: '20px' }}>
-              <div class="stat-card">
-                <span class="stat-label">DURATION</span>
-                <span class="stat-value" style={{ fontSize: '1.2rem' }}>
+              <div className="stat-card">
+                <span className="stat-label">DURATION</span>
+                <span className="stat-value" style={{ fontSize: '1.2rem' }}>
                   {selectedSession.total_duration_mins ? `${selectedSession.total_duration_mins.toFixed(1)}m` : 'N/A'}
                 </span>
               </div>
-              <div class="stat-card">
-                <span class="stat-label">CALORIES</span>
-                <span class="stat-value" style={{ fontSize: '1.2rem', color: 'var(--color-green)' }}>
+              <div className="stat-card">
+                <span className="stat-label">CALORIES</span>
+                <span className="stat-value" style={{ fontSize: '1.2rem', color: 'var(--color-green)' }}>
                   {selectedSession.total_calories_burned ? `${selectedSession.total_calories_burned.toFixed(1)}` : '0'} kcal
                 </span>
               </div>
-              <div class="stat-card">
-                <span class="stat-label">FORM SCORE</span>
-                <span class="stat-value" style={{ fontSize: '1.2rem', color: 'var(--color-blue)' }}>
+              <div className="stat-card">
+                <span className="stat-label">FORM SCORE</span>
+                <span className="stat-value" style={{ fontSize: '1.2rem', color: 'var(--color-blue)' }}>
                   {Math.round(selectedSession.avg_form_score)}%
                 </span>
               </div>
@@ -142,7 +142,7 @@ export const HistoryPage = () => {
             <h3 style={{ fontSize: '0.9rem', marginBottom: '10px', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
               Completed Sets Breakdowns
             </h3>
-            <table class="admin-table">
+            <table className="admin-table">
               <thead>
                 <tr>
                   <th>Set #</th>
@@ -170,7 +170,7 @@ export const HistoryPage = () => {
             </table>
 
             <div style={{ marginTop: '20px', textAlign: 'right' }}>
-              <button class="btn btn-secondary" onClick={() => setShowDetailModal(false)}>
+              <button className="btn btn-secondary" onClick={() => setShowDetailModal(false)}>
                 Close Window
               </button>
             </div>

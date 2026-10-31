@@ -22,13 +22,13 @@ export const Navbar = () => {
   ];
 
   return (
-    <header class="app-header">
-      <div class="logo-area" onClick={() => navigate('/app/overview')} style={{ cursor: 'pointer' }}>
-        <span class="logo-accent">FitSense</span>
-        <span class="logo-sub">AI</span>
+    <header className="app-header">
+      <div className="logo-area" onClick={() => navigate('/app/overview')} style={{ cursor: 'pointer' }}>
+        <span className="logo-accent">FitSense</span>
+        <span className="logo-sub">AI</span>
       </div>
 
-      <nav class="main-nav">
+      <nav className="main-nav">
         {navItems.map(item => (
           <NavLink
             key={item.path}
@@ -40,13 +40,13 @@ export const Navbar = () => {
         ))}
       </nav>
 
-      <div class="header-right">
+      <div className="header-right">
         <div
-          class="user-badge"
+          className="user-badge"
           style={{ position: 'relative', cursor: isAdmin ? 'pointer' : 'default' }}
           onClick={() => isAdmin && setDropdownOpen(!dropdownOpen)}
         >
-          <div class="avatar">{avatarLetter}</div>
+          <div className="avatar">{avatarLetter}</div>
           <span>{displayName}</span>
 
           {isAdmin && dropdownOpen && (
@@ -91,7 +91,7 @@ export const Navbar = () => {
 
         <button
           id="themeToggleBtn"
-          class="btn btn-secondary"
+          className="btn btn-secondary"
           onClick={toggleTheme}
           style={{
             marginLeft: '10px',
@@ -116,7 +116,7 @@ export const Navbar = () => {
         </button>
 
         <button
-          class="btn btn-danger btn-sm"
+          className="btn btn-danger btn-sm"
           onClick={logout}
           style={{ marginLeft: '10px' }}
         >

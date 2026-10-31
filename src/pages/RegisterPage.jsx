@@ -8,21 +8,45 @@ export const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
+    const trimmedName = name.trim();
+    const trimmedUsername = username.trim();
+    if (!trimmedName || trimmedUsername.length < 3) {
+      setError('Enter your name and a username with at least 3 characters.');
+      return;
+    }
+    if (password.length < 8) {
+      setError('Password must contain at least 8 characters.');
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
     setSubmitting(true);
 
-    await register({
-      name: name.trim() || 'Demo Athlete',
-      username: username.trim() || 'demo',
-      password
-    });
-
-    navigate('/app/overview');
+    try {
+      await register({
+        name: trimmedName,
+        username: trimmedUsername,
+        password
+      });
+      navigate('/app/overview');
+    } catch (err) {
+      const detail = err.response?.data?.detail;
+      setError(Array.isArray(detail) ? detail.map((item) => item.msg).join(' ') : detail || 'Unable to create account.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -83,6 +107,23 @@ export const RegisterPage = () => {
             <h2 style={{ fontSize: '1.4rem', fontWeight: 600, marginBottom: '6px' }}>Create Account</h2>
             <p style={{ color: '#aaaaaa', fontSize: '0.88rem' }}>Register to start custom workout logging</p>
           </div>
+
+          {error && (
+            <div
+              role="alert"
+              style={{
+                color: '#ff8a9b',
+                background: 'rgba(255, 23, 68, 0.12)',
+                border: '1px solid rgba(255, 23, 68, 0.35)',
+                borderRadius: '8px',
+                padding: '10px 12px',
+                marginBottom: '16px',
+                fontSize: '0.85rem'
+              }}
+            >
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: '16px' }}>

@@ -115,51 +115,51 @@ export const ProfilePage = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '800px', margin: '0 auto', width: '100%' }}>
       {/* Profile Details Card */}
-      <div class="panel">
-        <div class="panel-header">
+      <div className="panel">
+        <div className="panel-header">
           <h2>Athlete Profile & Physical Telemetry</h2>
         </div>
 
         {profileMsg && (
-          <div class="feedback-badge badge-green" style={{ marginBottom: '15px' }}>
+          <div className="feedback-badge badge-green" style={{ marginBottom: '15px' }}>
             {profileMsg}
           </div>
         )}
         {profileError && (
-          <div class="feedback-badge badge-red" style={{ marginBottom: '15px' }}>
+          <div className="feedback-badge badge-red" style={{ marginBottom: '15px' }}>
             {profileError}
           </div>
         )}
 
         <form onSubmit={handleSaveProfile}>
-          <div class="form-group">
+          <div className="form-group">
             <label>Full Name</label>
             <input
               type="text"
-              class="form-input"
+              className="form-input"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
 
-          <div class="form-row">
-            <div class="form-group col-6">
+          <div className="form-row">
+            <div className="form-group col-6">
               <label>Weight (kg)</label>
               <input
                 type="number"
                 step="0.1"
-                class="form-input"
+                className="form-input"
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
                 required
               />
             </div>
-            <div class="form-group col-6">
+            <div className="form-group col-6">
               <label>Height (cm)</label>
               <input
                 type="number"
-                class="form-input"
+                className="form-input"
                 value={height}
                 onChange={(e) => setHeight(e.target.value)}
                 required
@@ -167,20 +167,20 @@ export const ProfilePage = () => {
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="form-group col-6">
+          <div className="form-row">
+            <div className="form-group col-6">
               <label>Age</label>
               <input
                 type="number"
-                class="form-input"
+                className="form-input"
                 value={age}
                 onChange={(e) => setAge(e.target.value)}
                 required
               />
             </div>
-            <div class="form-group col-6">
+            <div className="form-group col-6">
               <label>Sex</label>
-              <select class="form-select" value={sex} onChange={(e) => setSex(e.target.value)}>
+              <select className="form-select" value={sex} onChange={(e) => setSex(e.target.value)}>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="other">Other / Unspecified</option>
@@ -188,11 +188,11 @@ export const ProfilePage = () => {
             </div>
           </div>
 
-          <div class="form-group">
+          <div className="form-group">
             <label>Primary Fitness Goal</label>
             <input
               type="text"
-              class="form-input"
+              className="form-input"
               placeholder="e.g. Build Muscle & Improve Bench Press"
               value={goal}
               onChange={(e) => setGoal(e.target.value)}
@@ -203,20 +203,20 @@ export const ProfilePage = () => {
             Lifestyle & Health Parameters
           </h3>
 
-          <div class="form-row">
-            <div class="form-group col-6">
+          <div className="form-row">
+            <div className="form-group col-6">
               <label>Avg Sleep (Hours / Night)</label>
               <input
                 type="number"
                 step="0.5"
-                class="form-input"
+                className="form-input"
                 value={sleepHours}
                 onChange={(e) => setSleepHours(e.target.value)}
               />
             </div>
-            <div class="form-group col-6">
+            <div className="form-group col-6">
               <label>Stress Level (1 - 5)</label>
-              <select class="form-select" value={stressLevel} onChange={(e) => setStressLevel(e.target.value)}>
+              <select className="form-select" value={stressLevel} onChange={(e) => setStressLevel(e.target.value)}>
                 <option value="1">1 - Very Low</option>
                 <option value="2">2 - Low</option>
                 <option value="3">3 - Moderate</option>
@@ -226,63 +226,63 @@ export const ProfilePage = () => {
             </div>
           </div>
 
-          <button type="submit" class="btn btn-success" style={{ width: '100%', marginTop: '10px' }}>
+          <button type="submit" className="btn btn-success" style={{ width: '100%', marginTop: '10px' }}>
             <Save size={16} /> Save Profile Settings
           </button>
         </form>
       </div>
 
       {/* Change Password Card */}
-      <div class="panel">
-        <div class="panel-header">
+      <div className="panel">
+        <div className="panel-header">
           <h2>Security & Password</h2>
         </div>
 
         {passwordMsg && (
-          <div class="feedback-badge badge-green" style={{ marginBottom: '15px' }}>
+          <div className="feedback-badge badge-green" style={{ marginBottom: '15px' }}>
             {passwordMsg}
           </div>
         )}
         {passwordError && (
-          <div class="feedback-badge badge-red" style={{ marginBottom: '15px' }}>
+          <div className="feedback-badge badge-red" style={{ marginBottom: '15px' }}>
             {passwordError}
           </div>
         )}
 
         <form onSubmit={handleChangePassword}>
-          <div class="form-group">
+          <div className="form-group">
             <label>Current Password</label>
             <input
               type="password"
-              class="form-input"
+              className="form-input"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               required
             />
           </div>
-          <div class="form-group">
+          <div className="form-group">
             <label>New Password (min 8 chars)</label>
             <input
               type="password"
-              class="form-input"
+              className="form-input"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
               minlength="8"
             />
           </div>
-          <div class="form-group">
+          <div className="form-group">
             <label>Confirm New Password</label>
             <input
               type="password"
-              class="form-input"
+              className="form-input"
               value={confirmNewPassword}
               onChange={(e) => setConfirmNewPassword(e.target.value)}
               required
               minlength="8"
             />
           </div>
-          <button type="submit" class="btn btn-warning" style={{ width: '100%', marginTop: '10px' }}>
+          <button type="submit" className="btn btn-warning" style={{ width: '100%', marginTop: '10px' }}>
             <Lock size={16} /> Update Password
           </button>
         </form>

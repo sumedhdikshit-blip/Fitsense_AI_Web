@@ -8,28 +8,28 @@ export const AdminNavbar = () => {
   const navigate = useNavigate();
 
   return (
-    <header class="navbar">
+    <header className="navbar">
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div class="navbar-brand">
-          <span class="brand-title">FitSense <span class="brand-sub">AI</span></span>
-          <span class="nav-separator">|</span>
-          <span class="brand-context">Admin Dashboard</span>
+        <div className="navbar-brand">
+          <span className="brand-title">FitSense <span className="brand-sub">AI</span></span>
+          <span className="nav-separator">|</span>
+          <span className="brand-context">Admin Dashboard</span>
         </div>
-        <nav class="admin-nav" style={{ display: 'flex', gap: '20px', marginLeft: '30px' }}>
+        <nav className="admin-nav" style={{ display: 'flex', gap: '20px', marginLeft: '30px' }}>
           <span style={{ color: '#4facfe', fontWeight: 600, fontSize: '0.95rem' }}>Dashboard</span>
         </nav>
       </div>
 
-      <div class="navbar-actions">
+      <div className="navbar-actions">
         <button
-          class="btn btn-nav"
+          className="btn btn-nav"
           onClick={() => navigate('/app/overview')}
         >
           <Home size={16} />
           Home Tracker
         </button>
         <button
-          class="btn btn-danger"
+          className="btn btn-danger"
           onClick={logout}
         >
           <LogOut size={16} />

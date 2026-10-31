@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Build and coverage output
+dist/
+build/
+coverage/
+**/dist/
+**/build/
+**/coverage/
+
+# Runtime data and logs
+*.log
+logs/
+*.db
+*.sqlite
+*.sqlite3
+
+# Tool and editor files
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json

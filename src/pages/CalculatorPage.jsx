@@ -161,27 +161,27 @@ export const CalculatorPage = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* Sub-Navigation Tabs */}
-      <div class="panel" style={{ padding: '12px 20px', flexDirection: 'row', gap: '10px' }}>
+      <div className="panel" style={{ padding: '12px 20px', flexDirection: 'row', gap: '10px' }}>
         <button
-          class={`btn btn-secondary ${activeTab === 'bmr' ? 'btn-success' : ''}`}
+          className={`btn btn-secondary ${activeTab === 'bmr' ? 'btn-success' : ''}`}
           onClick={() => setActiveTab('bmr')}
         >
           <Calculator size={16} /> BMR & TDEE Calculator
         </button>
         <button
-          class={`btn btn-secondary ${activeTab === 'meals' ? 'btn-success' : ''}`}
+          className={`btn btn-secondary ${activeTab === 'meals' ? 'btn-success' : ''}`}
           onClick={() => setActiveTab('meals')}
         >
           <Utensils size={16} /> Meal Tracker
         </button>
         <button
-          class={`btn btn-secondary ${activeTab === 'water' ? 'btn-success' : ''}`}
+          className={`btn btn-secondary ${activeTab === 'water' ? 'btn-success' : ''}`}
           onClick={() => setActiveTab('water')}
         >
           <Droplets size={16} /> Water Intake
         </button>
         <button
-          class={`btn btn-secondary ${activeTab === 'weight' ? 'btn-success' : ''}`}
+          className={`btn btn-secondary ${activeTab === 'weight' ? 'btn-success' : ''}`}
           onClick={() => setActiveTab('weight')}
         >
           <Scale size={16} /> Weight History
@@ -190,29 +190,29 @@ export const CalculatorPage = () => {
 
       {/* Tab 1: BMR & TDEE Calculator */}
       {activeTab === 'bmr' && (
-        <div class="dashboard-grid">
-          <div class="panel">
-            <div class="panel-header">
+        <div className="dashboard-grid">
+          <div className="panel">
+            <div className="panel-header">
               <h2>BMR & TDEE Calculator</h2>
             </div>
             <form onSubmit={calculateBmrTdee}>
-              <div class="form-row">
-                <div class="form-group col-6">
+              <div className="form-row">
+                <div className="form-group col-6">
                   <label>Weight (kg)</label>
                   <input
                     type="number"
                     step="0.1"
-                    class="form-input"
+                    className="form-input"
                     value={weight}
                     onChange={(e) => setWeight(e.target.value)}
                     required
                   />
                 </div>
-                <div class="form-group col-6">
+                <div className="form-group col-6">
                   <label>Height (cm)</label>
                   <input
                     type="number"
-                    class="form-input"
+                    className="form-input"
                     value={height}
                     onChange={(e) => setHeight(e.target.value)}
                     required
@@ -220,29 +220,29 @@ export const CalculatorPage = () => {
                 </div>
               </div>
 
-              <div class="form-row">
-                <div class="form-group col-6">
+              <div className="form-row">
+                <div className="form-group col-6">
                   <label>Age</label>
                   <input
                     type="number"
-                    class="form-input"
+                    className="form-input"
                     value={age}
                     onChange={(e) => setAge(e.target.value)}
                     required
                   />
                 </div>
-                <div class="form-group col-6">
+                <div className="form-group col-6">
                   <label>Sex</label>
-                  <select class="form-select" value={gender} onChange={(e) => setGender(e.target.value)}>
+                  <select className="form-select" value={gender} onChange={(e) => setGender(e.target.value)}>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                   </select>
                 </div>
               </div>
 
-              <div class="form-group">
+              <div className="form-group">
                 <label>Activity Level</label>
-                <select class="form-select" value={activity} onChange={(e) => setActivity(e.target.value)}>
+                <select className="form-select" value={activity} onChange={(e) => setActivity(e.target.value)}>
                   <option value="1.2">Sedentary (Little or no exercise)</option>
                   <option value="1.375">Lightly Active (1-3 days/week)</option>
                   <option value="1.55">Moderately Active (3-5 days/week)</option>
@@ -251,35 +251,35 @@ export const CalculatorPage = () => {
                 </select>
               </div>
 
-              <div class="form-group">
+              <div className="form-group">
                 <label>Fitness Goal</label>
-                <select class="form-select" value={goal} onChange={(e) => setGoal(e.target.value)}>
+                <select className="form-select" value={goal} onChange={(e) => setGoal(e.target.value)}>
                   <option value="cut">Fat Loss (-500 kcal Deficit)</option>
                   <option value="maintain">Maintenance (Keep Weight)</option>
                   <option value="bulk">Muscle Gain (+400 kcal Surplus)</option>
                 </select>
               </div>
 
-              <button type="submit" class="btn btn-success" style={{ width: '100%', marginTop: '10px' }}>
+              <button type="submit" className="btn btn-success" style={{ width: '100%', marginTop: '10px' }}>
                 Calculate Target Telemetry
               </button>
             </form>
           </div>
 
-          <div class="panel">
-            <div class="panel-header">
+          <div className="panel">
+            <div className="panel-header">
               <h2>Calculated Results</h2>
             </div>
             {results ? (
               <div>
-                <div class="stats-grid">
-                  <div class="stat-card">
-                    <span class="stat-label">BMR</span>
-                    <span class="stat-value">{results.bmr} kcal</span>
+                <div className="stats-grid">
+                  <div className="stat-card">
+                    <span className="stat-label">BMR</span>
+                    <span className="stat-value">{results.bmr} kcal</span>
                   </div>
-                  <div class="stat-card">
-                    <span class="stat-label">TDEE</span>
-                    <span class="stat-value" style={{ color: 'var(--color-blue)' }}>{results.tdee} kcal</span>
+                  <div className="stat-card">
+                    <span className="stat-label">TDEE</span>
+                    <span className="stat-value" style={{ color: 'var(--color-blue)' }}>{results.tdee} kcal</span>
                   </div>
                 </div>
 
@@ -291,17 +291,17 @@ export const CalculatorPage = () => {
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
-                  <div class="stat-card">
-                    <span class="stat-label">PROTEIN</span>
-                    <span class="stat-value" style={{ fontSize: '1.2rem' }}>{results.proteinG}g</span>
+                  <div className="stat-card">
+                    <span className="stat-label">PROTEIN</span>
+                    <span className="stat-value" style={{ fontSize: '1.2rem' }}>{results.proteinG}g</span>
                   </div>
-                  <div class="stat-card">
-                    <span class="stat-label">CARBS</span>
-                    <span class="stat-value" style={{ fontSize: '1.2rem' }}>{results.carbsG}g</span>
+                  <div className="stat-card">
+                    <span className="stat-label">CARBS</span>
+                    <span className="stat-value" style={{ fontSize: '1.2rem' }}>{results.carbsG}g</span>
                   </div>
-                  <div class="stat-card">
-                    <span class="stat-label">FAT</span>
-                    <span class="stat-value" style={{ fontSize: '1.2rem' }}>{results.fatG}g</span>
+                  <div className="stat-card">
+                    <span className="stat-label">FAT</span>
+                    <span className="stat-value" style={{ fontSize: '1.2rem' }}>{results.fatG}g</span>
                   </div>
                 </div>
               </div>
@@ -314,76 +314,76 @@ export const CalculatorPage = () => {
 
       {/* Tab 2: Meal Tracker */}
       {activeTab === 'meals' && (
-        <div class="dashboard-grid">
-          <div class="panel">
-            <div class="panel-header">
+        <div className="dashboard-grid">
+          <div className="panel">
+            <div className="panel-header">
               <h2>Log Custom Meal</h2>
             </div>
             <form onSubmit={handleAddMeal}>
-              <div class="form-group">
+              <div className="form-group">
                 <label>Meal Description</label>
                 <input
                   type="text"
-                  class="form-input"
+                  className="form-input"
                   placeholder="e.g. Protein Shake & Oats"
                   value={newMealName}
                   onChange={(e) => setNewMealName(e.target.value)}
                 />
               </div>
-              <div class="form-group">
+              <div className="form-group">
                 <label>Calories (kcal)</label>
                 <input
                   type="number"
-                  class="form-input"
+                  className="form-input"
                   placeholder="e.g. 450"
                   value={newMealCalories}
                   onChange={(e) => setNewMealCalories(e.target.value)}
                   required
                 />
               </div>
-              <div class="form-row">
-                <div class="form-group col-4">
+              <div className="form-row">
+                <div className="form-group col-4">
                   <label>Protein (g)</label>
                   <input
                     type="number"
-                    class="form-input"
+                    className="form-input"
                     value={newMealProtein}
                     onChange={(e) => setNewMealProtein(e.target.value)}
                   />
                 </div>
-                <div class="form-group col-4">
+                <div className="form-group col-4">
                   <label>Carbs (g)</label>
                   <input
                     type="number"
-                    class="form-input"
+                    className="form-input"
                     value={newMealCarbs}
                     onChange={(e) => setNewMealCarbs(e.target.value)}
                   />
                 </div>
-                <div class="form-group col-4">
+                <div className="form-group col-4">
                   <label>Fat (g)</label>
                   <input
                     type="number"
-                    class="form-input"
+                    className="form-input"
                     value={newMealFat}
                     onChange={(e) => setNewMealFat(e.target.value)}
                   />
                 </div>
               </div>
-              <button type="submit" class="btn btn-success" style={{ width: '100%', marginTop: '10px' }}>
+              <button type="submit" className="btn btn-success" style={{ width: '100%', marginTop: '10px' }}>
                 Add Meal Log
               </button>
             </form>
           </div>
 
-          <div class="panel">
-            <div class="panel-header">
+          <div className="panel">
+            <div className="panel-header">
               <h2>Daily Log ({mealDate})</h2>
             </div>
             <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
-              <div class="stat-card" style={{ flex: 1 }}>
-                <span class="stat-label">TOTAL CALORIES</span>
-                <span class="stat-value" style={{ fontSize: '1.4rem', color: 'var(--color-green)' }}>{totalMealCalories} kcal</span>
+              <div className="stat-card" style={{ flex: 1 }}>
+                <span className="stat-label">TOTAL CALORIES</span>
+                <span className="stat-value" style={{ fontSize: '1.4rem', color: 'var(--color-green)' }}>{totalMealCalories} kcal</span>
               </div>
             </div>
 
@@ -413,7 +413,7 @@ export const CalculatorPage = () => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <span style={{ fontWeight: 700 }}>{m.calories} kcal</span>
                       <button
-                        class="btn btn-danger btn-sm"
+                        className="btn btn-danger btn-sm"
                         style={{ padding: '4px 8px' }}
                         onClick={() => handleDeleteMeal(m.id)}
                       >
@@ -430,8 +430,8 @@ export const CalculatorPage = () => {
 
       {/* Tab 3: Water Intake */}
       {activeTab === 'water' && (
-        <div class="panel" style={{ maxWidth: '600px', margin: '0 auto', width: '100%', textAlign: 'center' }}>
-          <div class="panel-header">
+        <div className="panel" style={{ maxWidth: '600px', margin: '0 auto', width: '100%', textAlign: 'center' }}>
+          <div className="panel-header">
             <h2>Daily Water Hydration Tracker</h2>
           </div>
           <div style={{ padding: '30px 0' }}>
@@ -450,10 +450,10 @@ export const CalculatorPage = () => {
               />
             </div>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-              <button class="btn btn-secondary" onClick={() => handleAddWater(250)}>
+              <button className="btn btn-secondary" onClick={() => handleAddWater(250)}>
                 + 250 ml (Glass)
               </button>
-              <button class="btn btn-secondary" onClick={() => handleAddWater(500)}>
+              <button className="btn btn-secondary" onClick={() => handleAddWater(500)}>
                 + 500 ml (Bottle)
               </button>
             </div>
@@ -463,11 +463,11 @@ export const CalculatorPage = () => {
 
       {/* Tab 4: Weight History */}
       {activeTab === 'weight' && (
-        <div class="panel">
-          <div class="panel-header">
+        <div className="panel">
+          <div className="panel-header">
             <h2>Logged Weight History</h2>
           </div>
-          <table class="admin-table">
+          <table className="admin-table">
             <thead>
               <tr>
                 <th>Date</th>
@@ -478,7 +478,7 @@ export const CalculatorPage = () => {
             <tbody>
               {weightHistory.length === 0 ? (
                 <tr>
-                  <td colSpan="3" class="table-loading">No weight records found.</td>
+                  <td colSpan="3" className="table-loading">No weight records found.</td>
                 </tr>
               ) : (
                 weightHistory.map((item, idx) => (

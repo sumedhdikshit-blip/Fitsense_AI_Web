@@ -77,9 +77,9 @@ export const ChatbotWidget = () => {
   };
 
   return (
-    <div class="fitsense-chat-widget">
+    <div className="fitsense-chat-widget">
       <div
-        class="fitsense-chat-bubble"
+        className="fitsense-chat-bubble"
         onClick={() => setIsOpen(!isOpen)}
         title="Chat with FitSense Assistant"
         style={{ position: 'relative' }}
@@ -101,22 +101,22 @@ export const ChatbotWidget = () => {
         <MessageSquare size={26} />
       </div>
 
-      <div class={`fitsense-chat-panel ${isOpen ? 'open' : ''}`}>
-        <div class="fitsense-chat-header">
-          <div class="fitsense-chat-header-title">
-            <div class="fitsense-chat-bot-icon">
+      <div className={`fitsense-chat-panel ${isOpen ? 'open' : ''}`}>
+        <div className="fitsense-chat-header">
+          <div className="fitsense-chat-header-title">
+            <div className="fitsense-chat-bot-icon">
               <Bot size={18} />
             </div>
-            <div class="fitsense-chat-header-text">
-              <span class="fitsense-chat-title-main">FitSense Assistant</span>
-              <span class="fitsense-chat-title-sub">
-                <span class="fitsense-chat-status-dot" />
+            <div className="fitsense-chat-header-text">
+              <span className="fitsense-chat-title-main">FitSense Assistant</span>
+              <span className="fitsense-chat-title-sub">
+                <span className="fitsense-chat-status-dot" />
                 Online
               </span>
             </div>
           </div>
           <button
-            class="fitsense-chat-close"
+            className="fitsense-chat-close"
             onClick={() => setIsOpen(false)}
             title="Minimize"
           >
@@ -124,12 +124,12 @@ export const ChatbotWidget = () => {
           </button>
         </div>
 
-        <div class="fitsense-chat-messages">
-          <div class="fitsense-chat-msg fitsense-chat-msg-bot">
-            <div class="fitsense-chat-avatar">
+        <div className="fitsense-chat-messages">
+          <div className="fitsense-chat-msg fitsense-chat-msg-bot">
+            <div className="fitsense-chat-avatar">
               <Bot size={14} />
             </div>
-            <div class="fitsense-chat-msg-text">
+            <div className="fitsense-chat-msg-text">
               Hi! I am your FitSense Coach. Ask me any questions about fitness, nutrition, workouts, or goals!
             </div>
           </div>
@@ -137,23 +137,23 @@ export const ChatbotWidget = () => {
           {history.map((msg, idx) => (
             <div
               key={idx}
-              class={`fitsense-chat-msg fitsense-chat-msg-${msg.role === 'user' ? 'user' : 'bot'}`}
+              className={`fitsense-chat-msg fitsense-chat-msg-${msg.role === 'user' ? 'user' : 'bot'}`}
             >
               {msg.role !== 'user' && (
-                <div class="fitsense-chat-avatar">
+                <div className="fitsense-chat-avatar">
                   <Bot size={14} />
                 </div>
               )}
-              <div class="fitsense-chat-msg-text">{msg.content}</div>
+              <div className="fitsense-chat-msg-text">{msg.content}</div>
             </div>
           ))}
 
           {loading && (
-            <div class="fitsense-chat-msg fitsense-chat-msg-bot">
-              <div class="fitsense-chat-avatar">
+            <div className="fitsense-chat-msg fitsense-chat-msg-bot">
+              <div className="fitsense-chat-avatar">
                 <Bot size={14} />
               </div>
-              <div class="fitsense-chat-msg-text" style={{ fontStyle: 'italic', opacity: 0.8 }}>
+              <div className="fitsense-chat-msg-text" style={{ fontStyle: 'italic', opacity: 0.8 }}>
                 FitSense AI is thinking...
               </div>
             </div>
@@ -161,10 +161,10 @@ export const ChatbotWidget = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        <div class="fitsense-chat-input-area">
+        <div className="fitsense-chat-input-area">
           <input
             type="text"
-            class="fitsense-chat-input"
+            className="fitsense-chat-input"
             placeholder="Ask about fitness, nutrition, goals..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -172,7 +172,7 @@ export const ChatbotWidget = () => {
             disabled={loading}
           />
           <button
-            class="fitsense-chat-send-btn"
+            className="fitsense-chat-send-btn"
             onClick={handleSend}
             disabled={loading || !input.trim()}
             title="Send Message"

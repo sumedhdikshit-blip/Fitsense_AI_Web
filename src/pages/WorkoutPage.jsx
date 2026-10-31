@@ -165,15 +165,15 @@ export const WorkoutPage = () => {
   return (
     <div style={{ maxWidth: '840px', margin: '0 auto', width: '100%' }}>
       {/* Workout Controls Panel (Full Width) */}
-      <div class="panel">
-        <div class="panel-header">
+      <div className="panel">
+        <div className="panel-header">
           <h2>Workout Controls & Telemetry</h2>
-          {workoutActive && <span class="badge badge-green">Session Active</span>}
+          {workoutActive && <span className="badge badge-green">Session Active</span>}
         </div>
 
-        <div class="control-group">
+        <div className="control-group">
           <label>Select Exercise</label>
-          <select class="form-select" value={selectedExercise} onChange={handleExerciseChange}>
+          <select className="form-select" value={selectedExercise} onChange={handleExerciseChange}>
             {exercises.map((ex) => (
               <option key={ex.key} value={ex.key}>
                 {ex.display_name} ({ex.category})
@@ -182,84 +182,84 @@ export const WorkoutPage = () => {
           </select>
         </div>
 
-        <div class="action-buttons">
+        <div className="action-buttons">
           {!workoutActive ? (
-            <button class="btn btn-success" onClick={startWorkout}>
+            <button className="btn btn-success" onClick={startWorkout}>
               <Play size={16} /> Start Workout
             </button>
           ) : (
-            <button class="btn btn-warning" onClick={handleEndSet}>
+            <button className="btn btn-warning" onClick={handleEndSet}>
               End Set
             </button>
           )}
 
-          <button class="btn btn-danger" onClick={handleEndSession} disabled={!workoutActive && completedSets.length === 0}>
+          <button className="btn btn-danger" onClick={handleEndSession} disabled={!workoutActive && completedSets.length === 0}>
             End Session
           </button>
-          <button class="btn btn-secondary" onClick={() => setShowManualModal(true)}>
+          <button className="btn btn-secondary" onClick={() => setShowManualModal(true)}>
             <Edit size={16} /> Log Manual
           </button>
         </div>
 
         {/* Telemetry Display Cards */}
-        <div class="stats-grid">
-          <div class="stat-card">
-            <span class="stat-label">{isHoldMode ? 'HOLD TIME (S)' : 'REPS'}</span>
-            <span class="stat-value" style={{ color: 'var(--accent-color)' }}>{repCount}</span>
+        <div className="stats-grid">
+          <div className="stat-card">
+            <span className="stat-label">{isHoldMode ? 'HOLD TIME (S)' : 'REPS'}</span>
+            <span className="stat-value" style={{ color: 'var(--accent-color)' }}>{repCount}</span>
           </div>
-          <div class="stat-card">
-            <span class="stat-label">STAGE</span>
-            <span class="stat-value" style={{ fontSize: '1.5rem' }}>{stage}</span>
+          <div className="stat-card">
+            <span className="stat-label">STAGE</span>
+            <span className="stat-value" style={{ fontSize: '1.5rem' }}>{stage}</span>
           </div>
         </div>
 
         {/* Form Score Bar */}
-        <div class="form-score-section">
-          <div class="form-score-header">
+        <div className="form-score-section">
+          <div className="form-score-header">
             <span>Session Form Score</span>
-            <span class="score-green">{formScore}%</span>
+            <span className="score-green">{formScore}%</span>
           </div>
-          <div class="progress-bar-container">
-            <div class="progress-bar bar-green" style={{ width: `${formScore}%` }} />
+          <div className="progress-bar-container">
+            <div className="progress-bar bar-green" style={{ width: `${formScore}%` }} />
           </div>
         </div>
 
         {/* Feedback Badges */}
-        <div class="feedback-section">
+        <div className="feedback-section">
           <h3 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase' }}>
             Real-time Feedback
           </h3>
-          <div class="feedback-badge badge-green">{feedback}</div>
+          <div className="feedback-badge badge-green">{feedback}</div>
         </div>
       </div>
 
       {/* Log Completed Set Modal */}
       {showLogSetModal && (
-        <div class="modal-overlay active">
-          <div class="modal">
-            <div class="modal-header">
+        <div className="modal-overlay active">
+          <div className="modal">
+            <div className="modal-header">
               <h2>Log Completed Set</h2>
             </div>
-            <div class="form-group">
+            <div className="form-group">
               <label>Reps / Hold Time</label>
               <input
                 type="number"
-                class="form-input"
+                className="form-input"
                 value={modalReps}
                 onChange={(e) => setModalReps(e.target.value)}
               />
             </div>
-            <div class="form-group">
+            <div className="form-group">
               <label>Weight (kg)</label>
               <input
                 type="number"
                 step="0.5"
-                class="form-input"
+                className="form-input"
                 value={modalWeight}
                 onChange={(e) => setModalWeight(e.target.value)}
               />
             </div>
-            <div class="form-group">
+            <div className="form-group">
               <label>Rate of Perceived Exertion (RPE 1-10)</label>
               <input
                 type="range"
@@ -272,10 +272,10 @@ export const WorkoutPage = () => {
               <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Rating: {rpe}/10</span>
             </div>
             <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-              <button class="btn btn-success" style={{ flex: 1 }} onClick={handleSaveSet}>
+              <button className="btn btn-success" style={{ flex: 1 }} onClick={handleSaveSet}>
                 Save Set
               </button>
-              <button class="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowLogSetModal(false)}>
+              <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowLogSetModal(false)}>
                 Cancel
               </button>
             </div>
@@ -285,15 +285,15 @@ export const WorkoutPage = () => {
 
       {/* Manual Entry Drawer/Modal */}
       {showManualModal && (
-        <div class="modal-overlay active">
-          <div class="modal">
-            <div class="modal-header">
+        <div className="modal-overlay active">
+          <div className="modal">
+            <div className="modal-header">
               <h2>Log Manual Workout</h2>
             </div>
-            <div class="form-group">
+            <div className="form-group">
               <label>Exercise</label>
               <select
-                class="form-select"
+                className="form-select"
                 value={manualExercise || selectedExercise}
                 onChange={(e) => setManualExercise(e.target.value)}
               >
@@ -304,30 +304,30 @@ export const WorkoutPage = () => {
                 ))}
               </select>
             </div>
-            <div class="form-group">
+            <div className="form-group">
               <label>Reps</label>
               <input
                 type="number"
-                class="form-input"
+                className="form-input"
                 value={manualReps}
                 onChange={(e) => setManualReps(e.target.value)}
               />
             </div>
-            <div class="form-group">
+            <div className="form-group">
               <label>Weight (kg)</label>
               <input
                 type="number"
                 step="0.5"
-                class="form-input"
+                className="form-input"
                 value={manualWeight}
                 onChange={(e) => setManualWeight(e.target.value)}
               />
             </div>
             <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-              <button class="btn btn-success" style={{ flex: 1 }} onClick={handleSaveManual}>
+              <button className="btn btn-success" style={{ flex: 1 }} onClick={handleSaveManual}>
                 Log Workout
               </button>
-              <button class="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowManualModal(false)}>
+              <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowManualModal(false)}>
                 Cancel
               </button>
             </div>
@@ -337,23 +337,23 @@ export const WorkoutPage = () => {
 
       {/* Session Finalization Summary Modal */}
       {showSummaryModal && (
-        <div class="modal-overlay active">
-          <div class="modal" style={{ textAlign: 'center' }}>
-            <div class="modal-header">
+        <div className="modal-overlay active">
+          <div className="modal" style={{ textAlign: 'center' }}>
+            <div className="modal-header">
               <h2>Workout Session Completed! 🎉</h2>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', margin: '20px 0' }}>
-              <div class="stat-card">
-                <span class="stat-label">TOTAL SETS</span>
-                <span class="stat-value">{summaryData.sets}</span>
+              <div className="stat-card">
+                <span className="stat-label">TOTAL SETS</span>
+                <span className="stat-value">{summaryData.sets}</span>
               </div>
-              <div class="stat-card">
-                <span class="stat-label">CALORIES BURNED</span>
-                <span class="stat-value" style={{ color: 'var(--color-green)' }}>{summaryData.calories} kcal</span>
+              <div className="stat-card">
+                <span className="stat-label">CALORIES BURNED</span>
+                <span className="stat-value" style={{ color: 'var(--color-green)' }}>{summaryData.calories} kcal</span>
               </div>
             </div>
             <button
-              class="btn btn-success"
+              className="btn btn-success"
               style={{ width: '100%' }}
               onClick={() => {
                 setShowSummaryModal(false);

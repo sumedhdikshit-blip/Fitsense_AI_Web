@@ -70,52 +70,52 @@ export const AdminPage = () => {
   return (
     <div>
       {/* Stat Cards Grid */}
-      <section class="metrics-grid">
-        <div class="metric-card">
-          <div class="metric-icon bg-blue">
-            <Users class="icon-lg" />
+      <section className="metrics-grid">
+        <div className="metric-card">
+          <div className="metric-icon bg-blue">
+            <Users className="icon-lg" />
           </div>
-          <div class="metric-content">
-            <span class="metric-label">Total Registered Users</span>
-            <span class="metric-value">{totalUsers}</span>
-          </div>
-        </div>
-
-        <div class="metric-card">
-          <div class="metric-icon bg-green">
-            <Activity class="icon-lg" />
-          </div>
-          <div class="metric-content">
-            <span class="metric-label">Total Active Sessions</span>
-            <span class="metric-value">{totalSessions}</span>
+          <div className="metric-content">
+            <span className="metric-label">Total Registered Users</span>
+            <span className="metric-value">{totalUsers}</span>
           </div>
         </div>
 
-        <div class="metric-card">
-          <div class="metric-icon bg-purple">
-            <Clock class="icon-lg" />
+        <div className="metric-card">
+          <div className="metric-icon bg-green">
+            <Activity className="icon-lg" />
           </div>
-          <div class="metric-content">
-            <span class="metric-label">Last Activity Logged</span>
-            <span class="metric-value" style={{ fontSize: '1.2rem' }}>{latestActivityStr}</span>
+          <div className="metric-content">
+            <span className="metric-label">Total Active Sessions</span>
+            <span className="metric-value">{totalSessions}</span>
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="metric-icon bg-purple">
+            <Clock className="icon-lg" />
+          </div>
+          <div className="metric-content">
+            <span className="metric-label">Last Activity Logged</span>
+            <span className="metric-value" style={{ fontSize: '1.2rem' }}>{latestActivityStr}</span>
           </div>
         </div>
       </section>
 
       {/* Admin Diagnostics Table Panel */}
-      <section class="panel">
-        <div class="panel-header">
+      <section className="panel">
+        <div className="panel-header">
           <h2>User Activity Diagnostic Table</h2>
           <p>Global view of registered accounts, role permissions, and workout statistics</p>
         </div>
 
         {error ? (
-          <div class="table-loading" style={{ color: 'var(--danger-color)', fontWeight: 600 }}>
+          <div className="table-loading" style={{ color: 'var(--danger-color)', fontWeight: 600 }}>
             {error}
           </div>
         ) : (
-          <div class="table-wrapper">
-            <table class="admin-table">
+          <div className="table-wrapper">
+            <table className="admin-table">
               <thead>
                 <tr>
                   <th>User ID</th>
@@ -130,11 +130,11 @@ export const AdminPage = () => {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="7" class="table-loading">Querying system diagnostics...</td>
+                    <td colSpan="7" className="table-loading">Querying system diagnostics...</td>
                   </tr>
                 ) : users.length === 0 ? (
                   <tr>
-                    <td colSpan="7" class="table-loading">No registered users found.</td>
+                    <td colSpan="7" className="table-loading">No registered users found.</td>
                   </tr>
                 ) : (
                   users.map((u) => {
@@ -149,9 +149,9 @@ export const AdminPage = () => {
                         <td>{u.name}</td>
                         <td>
                           {u.is_admin ? (
-                            <span class="badge badge-blue">ADMIN</span>
+                            <span className="badge badge-blue">ADMIN</span>
                           ) : (
-                            <span class="badge badge-slate">USER</span>
+                            <span className="badge badge-slate">USER</span>
                           )}
                         </td>
                         <td>{u.total_sessions || 0}</td>
@@ -159,14 +159,14 @@ export const AdminPage = () => {
                         <td>
                           <div style={{ display: 'flex', gap: '8px' }}>
                             <button
-                              class="btn btn-secondary btn-sm"
+                              className="btn btn-secondary btn-sm"
                               style={{ padding: '4px 8px', fontSize: '12px' }}
                               onClick={() => handleToggleAdmin(u.user_id, u.is_admin)}
                             >
                               {u.is_admin ? 'Demote' : 'Promote Admin'}
                             </button>
                             <button
-                              class="btn btn-danger btn-sm"
+                              className="btn btn-danger btn-sm"
                               style={{ padding: '4px 8px' }}
                               onClick={() => handleDeleteUser(u.user_id, u.username)}
                             >
