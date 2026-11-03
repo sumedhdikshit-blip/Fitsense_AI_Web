@@ -12,6 +12,7 @@ export const OverviewPage = () => {
   const [fatigueWarnings, setFatigueWarnings] = useState([]);
   const [coachTip, setCoachTip] = useState(null);
   const [streakData, setStreakData] = useState(null);
+  const [readiness, setReadiness] = useState(null);
 
   // Modals
   const [showWeightModal, setShowWeightModal] = useState(false);
@@ -43,13 +44,14 @@ export const OverviewPage = () => {
 
   const loadDashboardData = async () => {
     try {
-      const [weightRes, summaryRes, sessionsRes, fatigueRes, coachRes, streakRes] = await Promise.allSettled([
+      const [weightRes, summaryRes, sessionsRes, fatigueRes, coachRes, streakRes, readinessRes] = await Promise.allSettled([
         trackingApi.getWeightHistory(weightDays),
         overviewApi.getSummary(),
         overviewApi.getRecentSessions(),
         overviewApi.getFatigueWarnings(),
         overviewApi.getAiCoaching(),
-        overviewApi.getStreak()
+        overviewApi.getStreak(),
+        overviewApi.getReadiness()
       ]);
 
       if (weightRes.status === 'fulfilled') setWeightHistory(weightRes.value.data || []);
@@ -58,6 +60,7 @@ export const OverviewPage = () => {
       if (fatigueRes.status === 'fulfilled') setFatigueWarnings(fatigueRes.value.data || []);
       if (coachRes.status === 'fulfilled') setCoachTip(coachRes.value.data?.tip || null);
       if (streakRes.status === 'fulfilled') setStreakData(streakRes.value.data || null);
+      if (readinessRes.status === 'fulfilled') setReadiness(readinessRes.value.data || null);
     } catch (err) {
       console.error('Error loading dashboard:', err);
     }
@@ -109,6 +112,24 @@ export const OverviewPage = () => {
       refreshUser();
     } catch (err) {
       console.error('Error saving goal:', err);
+    }
+  };
+
+  const handleSaveCardio = async () => {
+    if (!cardioValue) return;
+    try {
+      await trackingApi.logCardio({
+        date: new Date().toISOString().slice(0, 10),
+        activity_name: cardioType,
+        duration_mins: parseFloat(cardioValue),
+        calories_burned: Math.round(parseFloat(cardioValue) * 8),
+        entry_method: 'duration'
+      });
+      setCardioValue('');
+      setShowCardioModal(false);
+      loadDashboardData();
+    } catch (err) {
+      console.error('Error logging cardio:', err);
     }
   };
 
@@ -219,6 +240,9 @@ export const OverviewPage = () => {
               <button className="btn btn-secondary btn-sm" onClick={() => setShowFoodModal(true)}>
                 <Plus size={14} /> Log Food
               </button>
+              <button className="btn btn-secondary btn-sm" onClick={() => setShowCardioModal(true)}>
+                <Activity size={14} /> Log Cardio
+              </button>
             </div>
           </div>
 
@@ -246,6 +270,25 @@ export const OverviewPage = () => {
             </div>
           </div>
         </div>
+
+        <div className="panel">
+          <div className="panel-header">
+            <h2>Recent Weight Entries</h2>
+            <span className="badge badge-blue">{weightHistory.length} records</span>
+          </div>
+          {weightHistory.length === 0 ? (
+            <p style={{ color: 'var(--text-muted)' }}>No weight entries for this range.</p>
+          ) : (
+            <div className="weight-history-list">
+              {weightHistory.slice(-7).reverse().map((entry) => (
+                <div className="weight-history-row" key={`${entry.date}-${entry.weight_kg}`}>
+                  <span>{entry.date}</span>
+                  <strong>{entry.weight_kg} kg</strong>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* AI Readiness & Coaching Section */}
@@ -257,10 +300,10 @@ export const OverviewPage = () => {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             <div style={{ width: '90px', height: '90px', borderRadius: '50%', border: '6px solid var(--color-green)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.8rem', fontWeight: 800 }}>
-              85%
+              {readiness?.readiness ?? '--'}%
             </div>
             <div>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '4px' }}>Optimal Recovery State</h3>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '4px' }}>{readiness?.label || 'Readiness unavailable'}</h3>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                 Your muscle strain indicators show high readiness for intensive compound training.
               </p>
@@ -418,6 +461,26 @@ export const OverviewPage = () => {
               <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowFoodModal(false)}>
                 Cancel
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCardioModal && (
+        <div className="modal-overlay active">
+          <div className="modal">
+            <div className="modal-header"><h2>Log Cardio</h2></div>
+            <div className="form-group">
+              <label>Activity</label>
+              <input className="form-input" value={cardioType} onChange={(e) => setCardioType(e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Duration (minutes)</label>
+              <input type="number" min="0" className="form-input" value={cardioValue} onChange={(e) => setCardioValue(e.target.value)} />
+            </div>
+            <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+              <button className="btn btn-success" style={{ flex: 1 }} onClick={handleSaveCardio}>Save Cardio</button>
+              <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowCardioModal(false)}>Cancel</button>
             </div>
           </div>
         </div>

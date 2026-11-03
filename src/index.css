@@ -322,6 +322,56 @@ body {
   }
 }
 
+@media (max-width: 700px) {
+  body {
+    padding: 10px;
+  }
+
+  .app-header {
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .logo-area {
+    flex: 1 1 100%;
+  }
+
+  .main-nav {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .nav-link {
+    flex: 1 1 auto;
+    padding: 8px 6px;
+    text-align: center;
+    font-size: 0.78rem;
+  }
+
+  .header-right {
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
+
+  .user-badge {
+    max-width: 55%;
+    overflow: hidden;
+  }
+
+  .user-badge span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dashboard-grid {
+    gap: 14px;
+  }
+}
+
 /* Alert Banner */
 .setup-banner {
   background-color: var(--color-yellow);
@@ -426,6 +476,26 @@ body.light-theme .logo-accent {
 .header-right {
   display: flex;
   align-items: center;
+  min-width: 0;
+}
+
+.weight-history-list {
+  display: grid;
+  gap: 8px;
+}
+
+.weight-history-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--pill-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-muted);
+}
+
+.weight-history-row strong {
+  color: var(--text-main);
 }
 
 .user-badge {

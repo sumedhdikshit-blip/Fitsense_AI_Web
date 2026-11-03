@@ -22,13 +22,8 @@ export default defineConfig({
       '/chat': 'http://localhost:8000',
       '/exercises': 'http://localhost:8000',
       '/analytics': 'http://localhost:8000',
-      '/admin': 'http://localhost:8000',
       '/fitness-score': 'http://localhost:8000',
       '/ai': 'http://localhost:8000',
-      '/ws': {
-        target: 'ws://localhost:8000',
-        ws: true
-      }
     }
   }
 });

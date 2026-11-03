@@ -34,6 +34,7 @@ export const overviewApi = {
     return { data: { current_streak: data.length ? 1 : 0, total_sessions: data.length } };
   },
   getAiCoaching: () => client.get('/ai/coach-tip'),
+  getReadiness: () => client.get('/ai/readiness'),
   getReadinessTrend: () => Promise.resolve({ data: [] }),
   getChartData: () => Promise.resolve({ data: {} }),
   overrideReadiness: () => Promise.resolve({ data: { success: true } }),
@@ -66,6 +67,7 @@ export const trackingApi = {
     return { data: { meals: data.meals || [] } };
   },
   deleteMeal: (mealId, date = new Date().toISOString().slice(0, 10)) => client.delete(`/nutrition/${date}/meals/${mealId}`),
+  logCardio: (data) => client.post('/cardio/log', data),
   logWater: (amountMl) => client.post('/water/log', { amount_ml: amountMl }),
   getTodayWater: () => client.get('/water/today'),
   logWeight: (data) => client.post('/weight/log', data),

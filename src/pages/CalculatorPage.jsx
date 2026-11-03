@@ -118,6 +118,7 @@ export const CalculatorPage = () => {
     if (!newMealCalories) return;
     try {
       await trackingApi.logMeal({
+        date: mealDate,
         meal_name: newMealName || 'Logged Meal',
         calories: parseFloat(newMealCalories),
         protein_g: parseFloat(newMealProtein) || 0,
@@ -137,7 +138,7 @@ export const CalculatorPage = () => {
 
   const handleDeleteMeal = async (mealId) => {
     try {
-      await trackingApi.deleteMeal(mealId);
+      await trackingApi.deleteMeal(mealId, mealDate);
       loadDailyMealLog();
     } catch (err) {
       console.error('Error deleting meal:', err);
@@ -393,7 +394,7 @@ export const CalculatorPage = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {mealList.map((m) => (
                   <div
-                    key={m.id}
+                    key={m._id || m.id}
                     style={{
                       display: 'flex',
                       justifyContent: 'space-between',
@@ -415,7 +416,7 @@ export const CalculatorPage = () => {
                       <button
                         className="btn btn-danger btn-sm"
                         style={{ padding: '4px 8px' }}
-                        onClick={() => handleDeleteMeal(m.id)}
+                        onClick={() => handleDeleteMeal(m._id || m.id)}
                       >
                         <Trash2 size={14} />
                       </button>

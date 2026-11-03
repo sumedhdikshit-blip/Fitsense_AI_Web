@@ -268,7 +268,7 @@ export const ProfilePage = () => {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
-              minlength="8"
+              minLength={8}
             />
           </div>
           <div className="form-group">
@@ -279,7 +279,7 @@ export const ProfilePage = () => {
               value={confirmNewPassword}
               onChange={(e) => setConfirmNewPassword(e.target.value)}
               required
-              minlength="8"
+              minLength={8}
             />
           </div>
           <button type="submit" className="btn btn-warning" style={{ width: '100%', marginTop: '10px' }}>

@@ -6,20 +6,24 @@ export const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     setSubmitting(true);
 
-    const userLogin = username.trim() || 'demo';
-    const data = await login({ username: userLogin, password });
-
-    if (data?.is_admin || userLogin.toLowerCase() === 'admin') {
-      navigate('/admin');
-    } else {
-      navigate('/app/overview');
+    try {
+      const userLogin = username.trim();
+      const data = await login({ username: userLogin, password });
+      navigate(data?.is_admin ? '/admin' : '/app/overview');
+    } catch (err) {
+      const detail = err.response?.data?.detail;
+      setError(Array.isArray(detail) ? detail.map((item) => item.msg).join(' ') : detail || 'Invalid username or password.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -81,6 +85,12 @@ export const LoginPage = () => {
             <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '6px' }}>Welcome Back</h2>
             <p style={{ color: '#aaaaaa', fontSize: '0.9rem' }}>Sign in to track your workout session</p>
           </div>
+
+          {error && (
+            <div className="feedback-badge badge-red" role="alert" style={{ marginBottom: '16px' }}>
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: '20px' }}>

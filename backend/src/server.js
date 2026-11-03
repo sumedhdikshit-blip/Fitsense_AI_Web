@@ -54,7 +54,8 @@ const nutritionSchema = new mongoose.Schema({
   meals: [{ meal_name: String, calories: Number, protein_g: Number, carbs_g: Number, fat_g: Number }],
   water_ml: { type: Number, default: 0 },
   calories_consumed: { type: Number, default: 0 }, protein_g: { type: Number, default: 0 },
-  carbs_g: { type: Number, default: 0 }, fat_g: { type: Number, default: 0 }
+  carbs_g: { type: Number, default: 0 }, fat_g: { type: Number, default: 0 },
+  calories_burned: { type: Number, default: 0 }
 }, { timestamps: true });
 nutritionSchema.index({ userId: 1, date: 1 }, { unique: true });
 const weightSchema = new mongoose.Schema({ userId: mongoose.Schema.Types.ObjectId, date: String, weight_kg: Number }, { timestamps: true });
@@ -72,6 +73,9 @@ const exercises = [
 ].map(([key, display_name, category, mode]) => ({ key, display_name, category, mode }));
 const exerciseByKey = new Map(exercises.map((exercise) => [exercise.key, exercise]));
 const today = () => new Date().toISOString().slice(0, 10);
+const isValidDate = (value) => /^\d{4}-\d{2}-\d{2}$/.test(String(value || ''));
+const isPositiveNumber = (value) => Number.isFinite(Number(value)) && Number(value) >= 0;
+const validId = (value) => mongoose.isValidObjectId(value);
 const publicUser = (user) => ({ user_id: String(user._id), id: String(user._id), username: user.username, name: user.name, email: user.email || '', role: user.isAdmin ? 'admin' : 'user', is_admin: user.isAdmin });
 const profileFor = (user) => ({ name: user.name, ...user.profile.toObject ? user.profile.toObject() : user.profile });
 const requireUser = async (req, res, next) => {
@@ -141,14 +145,26 @@ app.get('/sessions/:id', requireUser, asyncRoute(async (req, res) => { const s =
 app.get('/profile', requireUser, (req, res) => res.json(profileFor(req.user)));
 app.post('/profile', requireUser, asyncRoute(async (req, res) => { const { name, ...profile } = req.body; req.user.name = name || req.user.name; req.user.profile = { ...req.user.profile.toObject(), ...profile }; await req.user.save(); res.json({ status: 'success', message: 'Profile updated successfully', profile: profileFor(req.user) }); }));
 app.post('/profile/weight-goal', requireUser, asyncRoute(async (req, res) => { req.user.profile = { ...req.user.profile.toObject(), ...req.body }; await req.user.save(); res.json({ status: 'success', message: 'Weight goal updated successfully' }); }));
-app.post('/profile/change-password', requireUser, asyncRoute(async (req, res) => { if (!(await bcrypt.compare(req.body.current_password || '', req.user.passwordHash))) return res.status(400).json({ detail: 'Incorrect current password.' }); if (req.body.new_password !== req.body.confirm_new_password && req.body.new_password !== req.body.confirm_password) return res.status(400).json({ detail: 'New passwords do not match.' }); req.user.passwordHash = await bcrypt.hash(req.body.new_password, 12); await req.user.save(); res.json({ status: 'success', message: 'Password changed successfully.' }); }));
+app.post('/profile/change-password', requireUser, asyncRoute(async (req, res) => {
+  const confirmation = req.body.confirm_new_password || req.body.confirm_password;
+  if (!req.body.new_password || req.body.new_password.length < 8) return res.status(400).json({ detail: 'New password must contain at least 8 characters.' });
+  if (req.body.new_password !== confirmation) return res.status(400).json({ detail: 'New passwords do not match.' });
+  if (!(await bcrypt.compare(req.body.current_password || '', req.user.passwordHash))) return res.status(400).json({ detail: 'Incorrect current password.' });
+  req.user.passwordHash = await bcrypt.hash(req.body.new_password, 12); await req.user.save(); res.json({ status: 'success', message: 'Password changed successfully.' });
+}));
 
 const nutritionFor = async (userId, date) => Nutrition.findOne({ userId, date }) || null;
-app.get('/nutrition/:date', requireUser, asyncRoute(async (req, res) => { const n = await Nutrition.findOne({ userId: req.user._id, date: req.params.date }); res.json(n || { date: req.params.date, calories_consumed: 0, protein_g: 0, carbs_g: 0, fat_g: 0 }); }));
-app.get('/nutrition/history', requireUser, asyncRoute(async (req, res) => res.json(await Nutrition.find({ userId: req.user._id }).sort({ date: 1 }).limit(Number(req.query.days) || 7).lean())));
+app.get('/nutrition/history', requireUser, asyncRoute(async (req, res) => res.json(await Nutrition.find({ userId: req.user._id }).sort({ date: 1 }).limit(Math.min(365, Math.max(1, Number(req.query.days) || 7))).lean())));
+app.get('/nutrition/:date', requireUser, asyncRoute(async (req, res) => {
+  if (!isValidDate(req.params.date)) return res.status(400).json({ detail: 'Invalid date. Expected YYYY-MM-DD.' });
+  const n = await Nutrition.findOne({ userId: req.user._id, date: req.params.date });
+  res.json(n || { date: req.params.date, meals: [], calories_consumed: 0, protein_g: 0, carbs_g: 0, fat_g: 0 });
+}));
 app.get('/food/search', requireUser, (_req, res) => res.json([{ name: 'Chicken Breast (Grilled)', calories: 165, protein_g: 31, carbs_g: 0, fat_g: 3.6 }, { name: 'Brown Rice (1 cup)', calories: 216, protein_g: 5, carbs_g: 45, fat_g: 1.8 }, { name: 'Whole Eggs (2 Large)', calories: 140, protein_g: 12, carbs_g: 1, fat_g: 10 }]));
 app.post('/nutrition/log', requireUser, asyncRoute(async (req, res) => {
   const d = req.body;
+  const numericFields = ['calories_consumed', 'protein_g', 'carbs_g', 'fat_g'];
+  if (!isValidDate(d.date) || numericFields.some((field) => !isPositiveNumber(d[field]))) return res.status(400).json({ detail: 'Nutrition date and values must be valid non-negative numbers.' });
   const n = await Nutrition.findOneAndUpdate(
     { userId: req.user._id, date: d.date },
     { $inc: { calories_consumed: Number(d.calories_consumed || 0), protein_g: Number(d.protein_g || 0), carbs_g: Number(d.carbs_g || 0), fat_g: Number(d.fat_g || 0) },
@@ -158,10 +174,21 @@ app.post('/nutrition/log', requireUser, asyncRoute(async (req, res) => {
   res.json({ status: 'success', message: 'Nutrition logs saved successfully', nutrition: n });
 }));
 app.delete('/nutrition/:date/meals/:mealId', requireUser, asyncRoute(async (req, res) => {
-  await Nutrition.updateOne({ userId: req.user._id, date: req.params.date }, { $pull: { meals: { _id: req.params.mealId } } });
+  if (!isValidDate(req.params.date) || !validId(req.params.mealId)) return res.status(400).json({ detail: 'Invalid meal identifier or date.' });
+  const nutrition = await Nutrition.findOne({ userId: req.user._id, date: req.params.date });
+  if (!nutrition) return res.status(404).json({ detail: 'Nutrition entry not found.' });
+  const meal = nutrition.meals.id(req.params.mealId);
+  if (!meal) return res.status(404).json({ detail: 'Meal not found.' });
+  nutrition.calories_consumed = Math.max(0, nutrition.calories_consumed - meal.calories);
+  nutrition.protein_g = Math.max(0, nutrition.protein_g - meal.protein_g);
+  nutrition.carbs_g = Math.max(0, nutrition.carbs_g - meal.carbs_g);
+  nutrition.fat_g = Math.max(0, nutrition.fat_g - meal.fat_g);
+  nutrition.meals.pull(req.params.mealId);
+  await nutrition.save();
   res.json({ success: true });
 }));
 app.post('/water/log', requireUser, asyncRoute(async (req, res) => {
+  if (!isPositiveNumber(req.body.amount_ml)) return res.status(400).json({ detail: 'Water amount must be a non-negative number.' });
   const n = await Nutrition.findOneAndUpdate({ userId: req.user._id, date: today() }, { $inc: { water_ml: Number(req.body.amount_ml || 0) } }, { upsert: true, new: true });
   res.json({ total_ml: n.water_ml });
 }));
@@ -169,19 +196,60 @@ app.get('/water/today', requireUser, asyncRoute(async (req, res) => {
   const n = await Nutrition.findOne({ userId: req.user._id, date: today() });
   res.json({ total_ml: n?.water_ml || 0 });
 }));
-app.get('/dashboard/today', requireUser, asyncRoute(async (req, res) => { const date = today(); const [nutrition, sessions, weight] = await Promise.all([Nutrition.findOne({ userId: req.user._id, date }).lean(), Workout.find({ userId: req.user._id, date: { $gte: new Date(`${date}T00:00:00Z`) } }).lean(), Weight.findOne({ userId: req.user._id, date }).lean()]); res.json({ date, profile: profileFor(req.user), nutrition: nutrition || {}, sessions: { session_count: sessions.length, total_sets: sessions.reduce((a, s) => a + s.total_sets, 0), total_reps: sessions.reduce((a, s) => a + s.total_reps, 0), calories_burned: sessions.reduce((a, s) => a + s.total_calories_burned, 0) }, current_weight: weight?.weight_kg || req.user.profile.weight_kg || 0 }); }));
-app.post('/weight/log', requireUser, asyncRoute(async (req, res) => { const entry = await Weight.findOneAndUpdate({ userId: req.user._id, date: req.body.date || today() }, { weight_kg: Number(req.body.weight_kg) }, { upsert: true, new: true }); req.user.profile = { ...req.user.profile.toObject(), weight_kg: entry.weight_kg }; await req.user.save(); res.json(entry); }));
-app.get('/weight/history', requireUser, asyncRoute(async (req, res) => res.json(await Weight.find({ userId: req.user._id }).sort({ date: 1 }).lean())));
-app.post('/cardio/log', requireUser, (_req, res) => res.json({ status: 'success', message: 'Cardio log saved successfully' }));
+app.get('/dashboard/today', requireUser, asyncRoute(async (req, res) => { const date = today(); const [nutrition, sessions, weight] = await Promise.all([Nutrition.findOne({ userId: req.user._id, date }).lean(), Workout.find({ userId: req.user._id, date: { $gte: new Date(`${date}T00:00:00Z`) } }).lean(), Weight.findOne({ userId: req.user._id, date }).lean()]); res.json({ date, profile: profileFor(req.user), nutrition: nutrition || {}, sessions: { session_count: sessions.length, total_sets: sessions.reduce((a, s) => a + s.total_sets, 0), total_reps: sessions.reduce((a, s) => a + s.total_reps, 0), calories_burned: sessions.reduce((a, s) => a + s.total_calories_burned, 0) + (nutrition?.calories_burned || 0) }, current_weight: weight?.weight_kg || req.user.profile.weight_kg || 0 }); }));
+app.post('/weight/log', requireUser, asyncRoute(async (req, res) => {
+  if (!isPositiveNumber(req.body.weight_kg) || Number(req.body.weight_kg) <= 0 || !isValidDate(req.body.date || today())) return res.status(400).json({ detail: 'Weight must be positive and date must use YYYY-MM-DD.' });
+  const entry = await Weight.findOneAndUpdate({ userId: req.user._id, date: req.body.date || today() }, { weight_kg: Number(req.body.weight_kg) }, { upsert: true, new: true });
+  req.user.profile = { ...req.user.profile.toObject(), weight_kg: entry.weight_kg }; await req.user.save(); res.json(entry);
+}));
+app.get('/weight/history', requireUser, asyncRoute(async (req, res) => {
+  const days = String(req.query.days || 'all');
+  const filter = { userId: req.user._id };
+  if (days !== 'all' && Number.isFinite(Number(days))) {
+    const start = new Date(Date.now() - Number(days) * 86400000).toISOString().slice(0, 10);
+    filter.date = { $gte: start };
+  }
+  res.json(await Weight.find(filter).sort({ date: 1 }).lean());
+}));
+app.post('/cardio/log', requireUser, asyncRoute(async (req, res) => {
+  if (!isValidDate(req.body.date) || !req.body.activity_name?.trim() || !isPositiveNumber(req.body.duration_mins) || !isPositiveNumber(req.body.calories_burned)) return res.status(400).json({ detail: 'Cardio date, activity, duration, and calories are required.' });
+  const nutrition = await Nutrition.findOneAndUpdate({ userId: req.user._id, date: req.body.date }, { $inc: { calories_burned: Number(req.body.calories_burned) } }, { upsert: true, new: true });
+  res.json({ status: 'success', message: 'Cardio log saved successfully', calories_burned: nutrition.calories_burned });
+}));
 app.get('/cardio/:date', requireUser, (_req, res) => res.json([]));
 app.get('/fitness-score', requireUser, asyncRoute(async (req, res) => { const sessions = await Workout.countDocuments({ userId: req.user._id }); res.json({ score: Math.min(100, 50 + sessions * 5), grade: sessions > 5 ? 'A' : 'B' }); }));
 app.get('/analytics/form-patterns', requireUser, (_req, res) => res.json([]));
 app.get('/analytics/strength-trend', requireUser, (_req, res) => res.json([]));
-app.get('/ai/coach-tip', requireUser, (_req, res) => res.json({ tip: 'Log a workout to receive personalized coaching tips.' }));
-app.post('/chat', requireUser, (req, res) => res.json({ reply: 'Stay consistent with progressive overload, balanced nutrition, and recovery. I can help with fitness, nutrition, and wellness questions.' }));
-app.get('/api/overview/summary', requireUser, asyncRoute(async (req, res) => { const n = await Nutrition.findOne({ userId: req.user._id, date: today() }).lean() || {}; const burned = (await Workout.find({ userId: req.user._id }).sort({ date: -1 }).limit(1).lean())[0]?.total_calories_burned || 0; res.json({ calories_consumed: n.calories_consumed || 0, calories_burned: burned, net_calories: (n.calories_consumed || 0) - burned, protein_g: n.protein_g || 0, carbs_g: n.carbs_g || 0, fat_g: n.fat_g || 0 }); }));
+app.get('/ai/readiness', requireUser, asyncRoute(async (req, res) => {
+  const sleep = Number(req.user.profile.sleep_hours || 7);
+  const stress = Number(req.user.profile.stress_level || 3);
+  const recent = await Workout.countDocuments({ userId: req.user._id, date: { $gte: new Date(Date.now() - 7 * 86400000) } });
+  const score = Math.max(0, Math.min(100, Math.round(65 + sleep * 4 - stress * 3 - recent * 2)));
+  res.json({ readiness: score, label: score >= 75 ? 'Optimal Recovery State' : score >= 50 ? 'Moderate Recovery State' : 'Recovery Needed' });
+}));
+app.get('/ai/coach-tip', requireUser, asyncRoute(async (req, res) => {
+  const sessions = await Workout.countDocuments({ userId: req.user._id });
+  res.json({ tip: sessions ? `You have logged ${sessions} workout session${sessions === 1 ? '' : 's'}. Keep your next session focused on controlled reps and consistent recovery.` : 'Log your first workout to receive personalized coaching tips.' });
+}));
+app.post('/chat', requireUser, (req, res) => {
+  const message = String(req.body.message || '').toLowerCase();
+  let reply = 'Stay consistent with progressive overload, balanced nutrition, and recovery.';
+  if (message.includes('protein')) reply = 'Aim for roughly 1.6-2.2 grams of protein per kilogram of body weight daily.';
+  else if (message.includes('water') || message.includes('hydration')) reply = 'A practical starting point is 2-3 liters of water daily, increasing it around hard training or hot weather.';
+  else if (message.includes('sleep') || message.includes('recovery')) reply = 'Target 7-9 hours of sleep and schedule easier days when soreness or fatigue remains high.';
+  else if (message.includes('weight') || message.includes('lose') || message.includes('fat')) reply = 'Use a moderate calorie deficit, keep protein high, and track your weekly weight trend rather than daily fluctuations.';
+  else if (message.includes('squat') || message.includes('workout')) reply = 'Use a controlled tempo, brace your core, and keep progressive overload gradual across your workouts.';
+  res.json({ reply });
+});
+app.get('/api/overview/summary', requireUser, asyncRoute(async (req, res) => { const n = await Nutrition.findOne({ userId: req.user._id, date: today() }).lean() || {}; const burned = ((await Workout.find({ userId: req.user._id, date: { $gte: new Date(`${today()}T00:00:00Z`) } }).lean()).reduce((sum, workout) => sum + workout.total_calories_burned, 0)) + (n.calories_burned || 0); res.json({ calories_consumed: n.calories_consumed || 0, calories_burned: burned, net_calories: (n.calories_consumed || 0) - burned, protein_g: n.protein_g || 0, carbs_g: n.carbs_g || 0, fat_g: n.fat_g || 0 }); }));
 
-app.use((error, _req, res, _next) => { console.error(error); res.status(500).json({ detail: 'Internal Server Error' }); });
+app.use((error, _req, res, _next) => {
+  if (error instanceof SyntaxError && error.status === 400 && error.type === 'entity.parse.failed') return res.status(400).json({ detail: 'Malformed JSON request body.' });
+  if (error instanceof mongoose.Error.CastError) return res.status(400).json({ detail: 'Invalid identifier or value.' });
+  if (error instanceof mongoose.Error.ValidationError) return res.status(400).json({ detail: error.message });
+  console.error(error);
+  res.status(500).json({ detail: 'Internal Server Error' });
+});
 await mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/fitsense');
 if (process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD) {
   const username = process.env.ADMIN_USERNAME.trim().toLowerCase();
